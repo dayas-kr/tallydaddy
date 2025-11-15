@@ -1,3 +1,3 @@
-<p data-slot="alert-dialog-description" class="text-(--muted-foreground) text-sm">
+<x-ui.description dataSlot="alert-dialog-description" x-ref="alertDialogDesc">
     {{ $slot }}
-</p>
+</x-ui.description>

@@ -1,1 +1,1 @@
-<x-ui.button x-ref="cancel" variant="outline" @click="open = false">{{ $slot }}</x-ui.button>
+<x-ui.button variant="outline" @click="closeAlertDialog">{{ $slot }}</x-ui.button>
