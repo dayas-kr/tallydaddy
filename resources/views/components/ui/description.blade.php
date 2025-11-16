@@ -1,9 +1,5 @@
-@props(['value', 'disabled' => false])
+@props(['value', 'dataSlot' => 'description'])
 
-@php
-    $disabledClasses = $disabled ? 'text-zinc-400 dark:text-zinc-600' : 'text-zinc-600 dark:text-zinc-400';
-@endphp
-
-<div data-slot="description" {{ $attributes->merge(['class' => "text-sm {$disabledClasses}"]) }}>
+<div data-slot="{{ $dataSlot }}" {{ $attributes->merge(['class' => 'text-(--muted-foreground) text-sm']) }}>
     {{ $value ?? $slot }}
 </div>
