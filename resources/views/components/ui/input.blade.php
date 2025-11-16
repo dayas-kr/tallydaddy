@@ -1,55 +1,19 @@
-@props([
-    'size' => 'default',
-    'radius' => 'default',
-    'type' => 'text',
-    'disabled' => false,
-])
-
 @php
-    // Define input-type
-    $inputType = match ($type) {
-        'text' => 'text',
-        'password' => 'password',
-        'email' => 'email',
-        'url' => 'url',
-        'search' => 'search',
-        'tel' => 'tel',
-        'number' => 'number',
-        default => 'text',
-    };
-
-    // Define size-related classes.
-    $sizeClasses = match ($size) {
-        'extra-small' => 'text-xs h-7',
-        'small' => 'text-sm h-9',
-        'default' => 'text-sm h-10',
-        'large' => 'text-base h-12',
-        default => 'text-sm h-10',
-    };
-
-    // Define radius-related classes.
-    $radiusClasses = match ($radius) {
-        'none' => 'rounded-none',
-        'large' => 'rounded-md',
-        'full' => 'rounded-full',
-        default => 'rounded-md',
-    };
-
-    $baseClasses = implode(' ', [
-        $sizeClasses,
-        $radiusClasses,
-        'block',
-        'py-2 px-3',
-        'text-l-slate-12 dark:text-d-slate-12',
+    $classes = implode(' ', [
+        'w-full min-w-0 h-9 px-3 py-1 rounded-md',
+        'bg-transparent dark:bg-(--input)/30',
+        'border border-(--input) shadow-xs',
+        'text-base md:text-sm',
+        'transition-[color,box-shadow] outline-none',
+        'file:inline-flex file:h-7 file:bg-transparent file:text-sm file:font-medium file:text-(--foreground) file:border-0',
         'placeholder:text-(--muted-foreground)',
-        'border focus:ring-[3px] focus:outline-none transition-ring duration-300',
-        'bg-(--transparent)',
-        'border-(--border)',
-        'focus-visible:border-(--ring) focus-visible:ring-(--ring)/50',
-        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+        'selection:bg-(--primary) selection:text-(--primary-foreground)',
+        'focus-visible:border-(--ring)',
+        'focus-visible:ring-(--ring)/50 focus-visible:ring-[3px]',
+        'aria-invalid:border-(--destructive)',
+        'aria-invalid:ring-(--destructive)/20 dark:aria-invalid:ring-(--destructive)/40',
+        'disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-50',
     ]);
 @endphp
 
-
-<input data-slot="control" type="{{ $inputType }}" data-ui="input" @disabled($disabled)
-    {{ $attributes->merge(['class' => $baseClasses]) }} />
+<input {{ $attributes->merge(['class' => $classes]) }}>
