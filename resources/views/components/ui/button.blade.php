@@ -1,149 +1,84 @@
 @props([
-    'href' => '',
-    'size' => '2',
-    'variant' => 'primary',
-    'color' => '',
-    'radius' => 'medium',
-    'disabled' => false,
+    'type' => 'button',
+    'variant' => 'default',
+    'size' => 'default',
+    'radius' => 'lg',
+    'dataSlot' => 'button',
 ])
 
 @php
-    // Normalize size input
-    $size = match ($size) {
-        'small', '1' => 'small',
-        'medium', '2' => 'medium',
-        'large', '3' => 'large',
-        'extra-large', '4' => 'extra-large',
-        'icon-sm', 'icon', 'icon-lg', 'icon-xl' => $size,
-        default => 'medium',
+    $variantValue = match ($variant) {
+        'outline', 'ghost', 'destructive', 'secondary', 'link' => $variant,
+        default => 'default',
     };
 
-    // Size classes
-    $sizeClasses =
-        [
-            'small' => 'text-xs px-2 h-6',
-            'medium' => 'text-sm px-3 h-8',
-            'large' => 'text-base px-4 h-10',
-            'extra-large' => 'text-lg px-6 h-12',
-            'icon-sm' => 'text-xs h-6 w-6 flex items-center justify-center',
-            'icon' => 'text-sm size-8 flex items-center justify-center',
-            'icon-lg' => 'text-base px-4 size-10 flex items-center justify-center',
-            'icon-xl' => 'text-lg px-6 size-12 flex items-center justify-center',
-        ][$size] ?? 'text-sm px-3 h-8';
+    $sizeValue = match ($size) {
+        'sm', 'lg', 'icon', 'icon-sm', 'icon-lg' => $size,
+        default => 'default',
+    };
 
-    // Common styles (different for links vs buttons)
-    $isLink = !empty($href);
+    $radiusValue = match ($radius) {
+        'none', 'sm', 'lg', 'full' => $radius,
+        default => 'default',
+    };
 
-    $commonBase = [
-        'inline-flex',
-        'items-center',
-        'justify-center',
-        'gap-2',
-        'font-medium',
-        'whitespace-nowrap',
-        'transition-all',
-    ];
-
-    // Add disabled styles only for buttons
-    if (!$isLink) {
-        $commonBase[] = 'disabled:pointer-events-none';
-        $commonBase[] = 'disabled:opacity-50';
-    }
-
-    // Add disabled styles for links
-    if ($isLink && $disabled) {
-        $commonBase[] = 'pointer-events-none';
-        $commonBase[] = 'opacity-50';
-    }
-
-    $commonFocus = [
-        'focus:outline-hidden',
-        'focus-visible:border-(--ring)',
-        'focus-visible:ring-(--ring)/50',
-        'focus-visible:ring-[3px]',
-    ];
-
-    // Variant classes
-    $variantClasses = match ($variant) {
-        'primary' => implode(' ', [
-            'bg-(--primary)',
-            'hover:bg-(--primary)/90',
-            'text-(--primary-foreground)',
-            ...$commonFocus,
-        ]),
-
+    $variantClass = match ($variantValue) {
+        'default' => 'bg-(--primary) text-(--primary-foreground) hover:bg-(--primary)/90',
         'outline' => implode(' ', [
-            'bg-white dark:bg-(--input)/30',
+            'bg-(--background) dark:bg-(--input)/30',
+            'border border-(--border) dark:border-(--input)',
             'hover:bg-(--accent) dark:hover:bg-(--input)/50',
-            'text-(--accent-foreground) hover:text-(--accent-foreground)',
-            'border border-(--border)',
-            ...$commonFocus,
+            'shadow-xs hover:text-(--accent-foreground)',
         ]),
-
-        'secondary' => implode(' ', [
-            'bg-(--secondary)',
-            'hover:bg-(--secondary)/80',
-            'text-(--secondary-foreground)',
-            ...$commonFocus,
-        ]),
-
-        'ghost' => implode(' ', [
-            'hover:bg-(--accent)',
-            'dark:hover:bg-(--accent)/50',
-            'hover:text-(--accent-foreground)',
-            'text-(--accent-foreground)',
-            ...$commonFocus,
-        ]),
-
+        'ghost' => 'hover:bg-(--accent) hover:text-(--accent-foreground) dark:hover:bg-(--accent)/50',
         'destructive' => implode(' ', [
-            'bg-(--destructive)',
-            'dark:bg-(--destructive)/60',
-            'hover:bg-(--destructive)/90',
             'text-white',
-            'focus:outline-hidden',
-            'focus-visible:border-(--ring)',
-            'focus-visible:ring-(--destructive)/20',
-            'focus-visible:ring-[3px]',
+            'bg-(--destructive) dark:bg-(--destructive)/60',
+            'hover:bg-(--destructive)/90',
         ]),
-
-        'link' => implode(' ', [
-            'outline-hidden',
-            'focus-visible:border-(--ring)',
-            'focus-visible:ring-(--ring)/50',
-            'focus-visible:ring-[3px]',
-            'text-(--primary)',
-            'underline',
-            'underline-offset-4',
-        ]),
-
-        default => implode(' ', [
-            'bg-(--primary)]',
-            'hover:bg-(--primary)/90',
-            'text-(--primary-foreground)',
-            ...$commonFocus,
-        ]),
+        'secondary' => 'bg-(--secondary) text-(--secondary-foreground) hover:bg-(--secondary)/80',
+        'link' => 'text-(--primary) underline-offset-4 hover:underline',
     };
 
-    // Radius classes
-    $radiusClasses =
-        [
-            'none' => 'rounded-none',
-            'small' => 'rounded-xs',
-            'medium' => 'rounded-md',
-            'large' => 'rounded-lg',
-            'full' => 'rounded-full',
-        ][$radius] ?? 'rounded-xs';
+    $sizeClass = match ($sizeValue) {
+        'sm' => 'h-8 gap-1.5 px-3 has-[>svg]:px-2.5',
+        'default' => 'h-9 gap-2 px-4 py-2 has-[>svg]:px-3',
+        'lg' => 'h-10 gap-2 px-6 has-[>svg]:px-4',
+        'icon' => 'size-9',
+        'icon-sm' => 'size-8',
+        'icon-lg' => 'size-10',
+    };
 
-    // Combine all classes
-    $classes = implode(' ', [...$commonBase, $sizeClasses, $radiusClasses, $variantClasses]);
+    $radiusClass = match ($radiusValue) {
+        'none' => 'rounded-none',
+        'sm' => 'rounded-sm',
+        'default' => 'rounded-md',
+        'lg' => 'rounded-lg',
+        'full' => 'rounded-full',
+    };
+
+    $focusClass = match ($variantValue) {
+        'destructive' => 'focus-visible:ring-(--destructive)/20 dark:focus-visible:ring-(--destructive)/40',
+        default => 'focus-visible:ring-(--ring)/50',
+    };
+
+    $classes = implode(' ', [
+        'inline-flex items-center justify-center',
+        'whitespace-nowrap',
+        'text-sm font-medium',
+        'transition-all',
+        '[&_svg]:pointer-events-none [&_svg:not([class*="size-"])]:size-4 [&_svg]:shrink-0',
+        'shrink-0 outline-none',
+        'aria-invalid:ring-(--destructive)/20 dark:aria-invalid:ring-(--destructive)/40 aria-invalid:border-(--destructive)',
+        'focus-visible:border-(--ring) focus-visible:ring-[3px]',
+        'disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed',
+        $variantClass,
+        $sizeClass,
+        $radiusClass,
+        $focusClass,
+    ]);
 @endphp
 
-@if ($href)
-    <a href="{{ $href }}" {{ $attributes->merge(['class' => $classes]) }}>
-        {{ $slot }}
-    </a>
-@else
-    <button @disabled($disabled) {{ $attributes->merge(['class' => $classes]) }}>
-        {{ $slot }}
-    </button>
-@endif
+<button {{ $attributes->merge(['type' => $type, 'data-slot' => $dataSlot, 'class' => $classes]) }}>
+    {{ $slot }}
+</button>
