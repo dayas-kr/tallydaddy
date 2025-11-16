@@ -24,7 +24,7 @@
 
     $checkboxLabelClasses = implode(' ', [
         'data-[disabled=true]:cursor-not-allowed', // checkbox-specific
-        'select-none',
+        'select-none mt-px',
     ]);
 
     $checkboxDescClasses = implode(' ', [
